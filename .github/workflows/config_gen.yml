@@ -1,0 +1,31 @@
+name: ConfigGen
+
+on:
+  push:
+    paths:
+      - "src/config_gen/**"
+  pull_request:
+    paths:
+      - "src/config_gen/**"
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  check_config_gen:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Grab zig
+        uses: goto-bus-stop/setup-zig@v1
+        with:
+          version: master
+
+      - name: Check config gen
+        run: zig build gen -Dvscode-config-path=vscode_config.json
